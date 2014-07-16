@@ -2,6 +2,9 @@
 
 source vars.sh
 
+echo "nameserver ${dns01}" > /etc/resolvconf/resolv.conf.d/head
+resolvconf -u
+
 apt-get update
 apt-get install -y python-software-properties
 apt-add-repository -y ppa:reddit/ppa
@@ -114,3 +117,4 @@ STUNNELCONF
 sed -i s/ENABLED=0/ENABLED=1/ /etc/default/stunnel4
 
 make-ssl-cert generate-default-snakeoil –force-overwrite
+service haproxy restart

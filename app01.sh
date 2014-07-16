@@ -2,6 +2,9 @@
 
 source vars.sh
 
+echo "nameserver ${dns01}" > /etc/resolvconf/resolv.conf.d/head
+resolvconf -u
+
 apt-get update
 apt-get install -y python-software-properties
 apt-add-repository -y ppa:reddit/ppa
@@ -178,7 +181,7 @@ cat > $REDDIT_HOME/src/reddit/r2/run.ini << EOF
 short_description = open source is awesome
 site_lang = en
 default_header_url = reddit.com.header.png
-domain = reddit.efficios.com
+domain = $REDDIT_DOMAIN
 shortdomain = 
 domain_prefix = 
 reserved_subdomains = www, ssl
@@ -218,10 +221,10 @@ disable_captcha = true
 disable_ratelimit = true
 disable_require_admin_otp = true
 disable_wiki = false
-debug = true
+debug = false
 template_debug = false
 reload_templates = true
-uncompressedJS = true
+uncompressedJS = false
 sqlprinting = false
 profile_directory = 
 timed_templates = Reddit, Link, Comment, LinkListing, NestedListing, SubredditTopBar
@@ -294,15 +297,15 @@ CLOUDSEARCH_DOC_API =
 CLOUDSEARCH_SUBREDDIT_SEARCH_API = 
 CLOUDSEARCH_SUBREDDIT_DOC_API = 
 num_mc_clients = 5
-memcaches = reddit-memcached01.dev.efficios.com:11211
-memoizecaches = reddit-memcached01.dev.efficios.com:11211
-lockcaches = reddit-memcached01.dev.efficios.com:11211
-rendercaches = reddit-memcached01.dev.efficios.com:11211
-pagecaches = reddit-memcached01.dev.efficios.com:11211
-permacache_memcaches = reddit-memcached01.dev.efficios.com:11211
-srmembercaches = reddit-memcached01.dev.efficios.com:11211
+memcaches = reddit-memcached01.$domain:11211
+memoizecaches = reddit-memcached01.$domain:11211
+lockcaches = reddit-memcached01.$domain:11211
+rendercaches = reddit-memcached01.$domain:11211
+pagecaches = reddit-memcached01.$domain:11211
+permacache_memcaches = reddit-memcached01.$domain:11211
+srmembercaches = reddit-memcached01.$domain:11211
 stalecaches = 
-ratelimitcaches = reddit-memcached01.dev.efficios.com:11211
+ratelimitcaches = reddit-memcached01.$domain:11211
 locale = C
 timezone = UTC
 display_timezone = MST
@@ -310,7 +313,7 @@ static_path = /static/
 words_file = /usr/dict/words
 case_sensitive_domains = i.imgur.com, youtube.com
 import_private = false
-geoip_location = 127.0.0.1:5000
+geoip_location = http://reddit-sutro01.$domain:5000
 authentication_provider = cookie
 bcrypt_work_factor = 12
 login_cookie = reddit_session
@@ -319,12 +322,12 @@ otp_cookie = reddit_otp
 ADMIN_COOKIE_TTL = 32400
 ADMIN_COOKIE_MAX_IDLE = 900
 OTP_COOKIE_TTL = 604800
-cassandra_seeds = reddit-cassandra01.dev.efficios.com:9160
+cassandra_seeds = reddit-cassandra01.$domain:9160
 cassandra_pool_size = 5
 cassandra_rcl = ONE
 cassandra_wcl = ONE
 cassandra_default_pool = main
-amqp_host = reddit-rabbitmq01.dev.efficios.com:5672
+amqp_host = reddit-rabbitmq01.$domain:5672
 amqp_user = reddit
 amqp_pass = reddit
 amqp_virtual_host = /
@@ -341,15 +344,15 @@ db_port = 5432
 db_pool_size = 3
 db_pool_overflow_size = 3
 databases = main, comment, vote, email, authorize, award, hc, traffic
-main_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-comment_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-comment2_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-vote_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-email_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-authorize_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-award_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-hc_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
-traffic_db = reddit,   reddit-postgres01.dev.efficios.com, *,    *,    *,    *,    *
+main_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+comment_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+comment2_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+vote_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+email_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+authorize_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+award_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+hc_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
+traffic_db = reddit,   reddit-postgres01.$domain, *,    *,    *,    *,    *
 hardcache_categories = *:hc:hc
 db_app_name = reddit
 type_db = main

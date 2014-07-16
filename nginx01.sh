@@ -2,6 +2,9 @@
 
 source vars.sh
 
+echo "nameserver ${dns01}" > /etc/resolvconf/resolv.conf.d/head
+resolvconf -u
+
 apt-get update
 apt-get -y install nginx
 
@@ -24,3 +27,5 @@ MEDIA
 
 rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/reddit-media /etc/nginx/sites-enabled/
+
+service nginx start

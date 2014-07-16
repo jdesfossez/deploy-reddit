@@ -2,6 +2,9 @@
 
 source vars.sh
 
+echo "nameserver ${dns01}" > /etc/resolvconf/resolv.conf.d/head
+resolvconf -u
+
 apt-get update
 apt-get install -y python-software-properties
 apt-add-repository -y ppa:reddit/ppa
@@ -12,7 +15,7 @@ Pin-Priority: 600
 HERE
 
 apt-get update
-apt-get -y install sutro gunicorn git
+apt-get -y install sutro gunicorn git geoip-bin geoip-database python-geoip python-flask
 
 cat > /etc/sutro.ini <<SUTRO
 [app:main]
@@ -91,10 +94,13 @@ CONFIG = {
     "user": "$REDDIT_USER",
     "group": "$REDDIT_USER",
     "args": (
-        "--bind=127.0.0.1:5000",
+        "--bind=0.0.0.0:5000",
         "--workers=1",
          "--limit-request-line=8190",
          "geoip_service:application",
     ),
 }
 GEOIP
+
+service gunicorn start
+start sutro
